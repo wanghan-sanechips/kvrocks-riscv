@@ -23,6 +23,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env: 
+      RISCV_CROSSCOMPILE: "ON"
       riscv_gnu_toolchain_download_path: https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2025.07.03/riscv64-glibc-ubuntu-24.04-gcc-nightly-2025.07.03-nightly.tar.xz
       RISCV_PATH: /opt/riscv
 
@@ -63,5 +64,9 @@ jobs:
         export QEMU_LD_PREFIX=$RISCV_PATH/sysroot
         CC=riscv64-unknown-linux-gnu-gcc \
         CXX=riscv64-unknown-linux-gnu-g++ \
-        ./x.py build --unittest -j4
+        ./x.py build \
+        -DCMAKE_SYSTEM_NAME=Linux \
+        -DCMAKE_SYSTEM_PROCESSOR=riscv64 \
+        -DCMAKE_CROSSCOMPILING=TRUE \
+        --unittest -j4
         qemu-riscv64 -L $QEMU_LD_PREFIX -cpu rv64,v=true,vext_spec=v1.0,zba=true,zbb=true ./build/unittest
