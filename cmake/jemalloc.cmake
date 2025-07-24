@@ -40,10 +40,21 @@ FetchContent_GetProperties(jemalloc)
 if(NOT jemalloc_POPULATED)
   FetchContent_Populate(jemalloc)
 
+  if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
+    message(STATUS "Configuring jemalloc for RISC-V cross-compilation")
+    set(JEMALLOC_CROSS_FLAGS
+      "--host=riscv64-unknown-linux-gnu"
+      "--build=${CMAKE_HOST_SYSTEM_PROCESSOR}-pc-linux-gnu"
+      "--with-lg-vaddr=48"
+      )
+  else()
+    set(JEMALLOC_CROSS_FLAGS "")
+  endif()
+
   execute_process(COMMAND autoconf
     WORKING_DIRECTORY ${jemalloc_SOURCE_DIR}
   )
-  execute_process(COMMAND ${jemalloc_SOURCE_DIR}/configure CC=${CMAKE_C_COMPILER} -C --enable-autogen
+  execute_process(COMMAND ${jemalloc_SOURCE_DIR}/configure CC=${CMAKE_C_COMPILER} -C ${JEMALLOC_CROSS_FLAGS} --enable-autogen
                     --disable-shared --disable-libdl ${DISABLE_CACHE_OBLIVIOUS} ${ENABLE_JEMALLOC_PROFILING}
                     --with-jemalloc-prefix=""
     WORKING_DIRECTORY ${jemalloc_BINARY_DIR}
