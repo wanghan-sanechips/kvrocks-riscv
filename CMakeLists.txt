@@ -16,6 +16,13 @@
 # under the License.
 
 cmake_minimum_required(VERSION 3.16)
+
+if(DEFINED ENV{RISCV_CROSSCOMPILE})
+    set(CMAKE_SYSTEM_NAME Linux CACHE STRING "")
+    set(CMAKE_SYSTEM_PROCESSOR riscv64 CACHE STRING "")
+    set(CMAKE_CROSSCOMPILING TRUE CACHE BOOL "")
+endif()
+
 project(kvrocks
         DESCRIPTION "NoSQL which is based on RocksDB and compatible with the Redis protocol"
         LANGUAGES C CXX)
@@ -29,6 +36,9 @@ option(ENABLE_UBSAN "enable undefined behavior sanitizer" OFF)
 option(ASAN_WITH_LSAN "enable leak sanitizer while address sanitizer is enabled" ON)
 option(ENABLE_STATIC_LIBSTDCXX "link kvrocks with static library of libstd++ instead of shared library" ON)
 option(ENABLE_LUAJIT "enable use of luaJIT instead of lua" ON)
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
+    set(ENABLE_LUAJIT OFF)
+endif()
 option(ENABLE_OPENSSL "enable openssl to support tls connection" OFF)
 option(ENABLE_IPO "enable interprocedural optimization" ON)
 set(SYMBOLIZE_BACKEND "" CACHE STRING "symbolization backend library for cpptrace (libbacktrace, libdwarf, or empty)")
