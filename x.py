@@ -130,10 +130,6 @@ def build(dir: str, jobs: Optional[int], ninja: bool, unittest: bool, compiler: 
 
     cmake_options = ["-DCMAKE_BUILD_TYPE=RelWithDebInfo"]
 
-    import platform
-    if platform.machine() == 'riscv64':
-        cmake_options += ["-DENABLE_LUAJIT=OFF", "-DENABLE_LUA=ON"]
-
     if ninja:
         cmake_options.append("-G Ninja")
     if compiler == 'gcc':
