@@ -270,7 +270,7 @@ jobs:
         if: ${{ matrix.riscv_toolchain }}
         run: |
           sudo apt install -y wget build-essential cmake git python3 \
-            ibgflags-dev libsnappy-dev zlib1g-dev liblz4-dev libzstd-dev \
+            libgflags-dev libsnappy-dev zlib1g-dev liblz4-dev libzstd-dev \
             qemu-user qemu-user-static
           sudo mkdir -p $RISCV_PATH
           wget ${matrix.riscv_toolchain_url} -O riscv-toolchain.tar.xz
